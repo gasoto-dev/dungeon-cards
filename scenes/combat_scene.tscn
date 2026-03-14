@@ -1,0 +1,235 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/CombatScene.gd" id="1_combat"]
+[ext_resource type="PackedScene" path="res://scenes/reward_screen.tscn" id="2_reward"]
+
+[node name="CombatScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_combat")
+
+; ── Main layout (VBox: battle area on top, hand area on bottom) ──────────────
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 8
+
+[node name="BattleArea" type="HBoxContainer" parent="Layout"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 400)
+theme_override_constants/separation = 16
+
+; ── Enemy panel ──────────────────────────────────────────────────────────────
+
+[node name="EnemyPanel" type="PanelContainer" parent="Layout/BattleArea"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="Layout/BattleArea/EnemyPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="EnemySectionTitle" type="Label" parent="Layout/BattleArea/EnemyPanel/VBox"]
+text = "ENEMY"
+horizontal_alignment = 1
+add_theme_font_size_override/font_size = 12
+
+[node name="EnemyName" type="Label" parent="Layout/BattleArea/EnemyPanel/VBox"]
+text = "..."
+add_theme_font_size_override/font_size = 20
+horizontal_alignment = 1
+
+[node name="EnemyHPBar" type="ProgressBar" parent="Layout/BattleArea/EnemyPanel/VBox"]
+custom_minimum_size = Vector2(200, 20)
+max_value = 100.0
+add_theme_color_override/fill = Color(0.8, 0.2, 0.2, 1.0)
+
+[node name="EnemyHPLabel" type="Label" parent="Layout/BattleArea/EnemyPanel/VBox"]
+text = "HP: -- / --"
+horizontal_alignment = 1
+
+[node name="EnemyBlockLabel" type="Label" parent="Layout/BattleArea/EnemyPanel/VBox"]
+text = "Block: 0"
+horizontal_alignment = 1
+
+[node name="EnemyIntentLabel" type="Label" parent="Layout/BattleArea/EnemyPanel/VBox"]
+text = "Intent: ..."
+horizontal_alignment = 1
+
+[node name="EnemyDefeated" type="Label" parent="Layout/BattleArea/EnemyPanel"]
+layout_mode = 2
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -20.0
+offset_right = 80.0
+offset_bottom = 20.0
+text = "DEFEATED"
+add_theme_font_size_override/font_size = 28
+add_theme_color_override/font_color = Color(1.0, 0.3, 0.3, 1.0)
+horizontal_alignment = 1
+visible = false
+
+; ── Player panel ─────────────────────────────────────────────────────────────
+
+[node name="PlayerPanel" type="PanelContainer" parent="Layout/BattleArea"]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="Layout/BattleArea/PlayerPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PlayerSectionTitle" type="Label" parent="Layout/BattleArea/PlayerPanel/VBox"]
+text = "WIZARD"
+horizontal_alignment = 1
+add_theme_font_size_override/font_size = 12
+
+[node name="PlayerHPBar" type="ProgressBar" parent="Layout/BattleArea/PlayerPanel/VBox"]
+custom_minimum_size = Vector2(200, 20)
+max_value = 60.0
+value = 60.0
+add_theme_color_override/fill = Color(0.2, 0.7, 0.3, 1.0)
+
+[node name="PlayerHPLabel" type="Label" parent="Layout/BattleArea/PlayerPanel/VBox"]
+text = "HP: 60 / 60"
+horizontal_alignment = 1
+
+[node name="PlayerBlockLabel" type="Label" parent="Layout/BattleArea/PlayerPanel/VBox"]
+text = "Block: 0"
+horizontal_alignment = 1
+
+[node name="SpellSlots" type="HBoxContainer" parent="Layout/BattleArea/PlayerPanel/VBox"]
+alignment = 1
+
+[node name="StatusEffects" type="Label" parent="Layout/BattleArea/PlayerPanel/VBox"]
+text = "No status effects"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+; ── Hand area (cards + end turn) ─────────────────────────────────────────────
+
+[node name="HandArea" type="VBoxContainer" parent="Layout"]
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 280)
+theme_override_constants/separation = 8
+
+[node name="HandTitle" type="Label" parent="Layout/HandArea"]
+text = "YOUR HAND"
+horizontal_alignment = 1
+add_theme_font_size_override/font_size = 12
+
+[node name="CardContainer" type="HBoxContainer" parent="Layout/HandArea"]
+size_flags_horizontal = 3
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="EndTurnButton" type="Button" parent="Layout/HandArea"]
+custom_minimum_size = Vector2(180, 50)
+size_flags_horizontal = 4
+text = "End Turn"
+add_theme_font_size_override/font_size = 16
+
+; ── VICTORY overlay ───────────────────────────────────────────────────────────
+
+[node name="VictoryOverlay" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+visible = false
+modulate = Color(0, 0, 0, 0.5)
+
+[node name="VictoryLabel" type="Label" parent="VictoryOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -30.0
+offset_right = 120.0
+offset_bottom = 30.0
+text = "VICTORY"
+horizontal_alignment = 1
+vertical_alignment = 1
+add_theme_font_size_override/font_size = 48
+add_theme_color_override/font_color = Color(1.0, 0.9, 0.2, 1.0)
+
+; ── DEFEAT overlay ────────────────────────────────────────────────────────────
+
+[node name="DefeatOverlay" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+visible = false
+modulate = Color(0, 0, 0, 0.6)
+
+[node name="DefeatLabel" type="Label" parent="DefeatOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -30.0
+offset_right = 100.0
+offset_bottom = 30.0
+text = "DEFEAT"
+horizontal_alignment = 1
+vertical_alignment = 1
+add_theme_font_size_override/font_size = 48
+add_theme_color_override/font_color = Color(0.9, 0.2, 0.2, 1.0)
+
+; ── Reward overlay ────────────────────────────────────────────────────────────
+
+[node name="RewardOverlay" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+visible = false
+modulate = Color(0, 0, 0, 0.75)
+
+[node name="RewardScreen" parent="RewardOverlay" instance=ExtResource("2_reward")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -200.0
+offset_right = 360.0
+offset_bottom = 200.0
+
+; ── Subclass hint ─────────────────────────────────────────────────────────────
+
+[node name="SubclassHint" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -200.0
+offset_top = 16.0
+offset_right = 200.0
+offset_bottom = 48.0
+text = ""
+horizontal_alignment = 1
+add_theme_font_size_override/font_size = 16
+add_theme_color_override/font_color = Color(0.8, 0.8, 0.2, 1.0)
+visible = false
