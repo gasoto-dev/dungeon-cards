@@ -15,6 +15,7 @@ enum Type {
 @export var effect_data: Dictionary = {}
 @export var description: String = ""
 @export var exhausts: bool = false  # single-use: removed from deck after play
+@export var school: String = ""     # optional school affinity (SubclassData id), "" = none
 
 func _init(p_id: String = "", p_name: String = "", p_type: Type = Type.SPELL,
 		p_cost: int = 1, p_effect: Dictionary = {}, p_desc: String = "") -> void:
@@ -37,4 +38,5 @@ func duplicate_card() -> Card:
 	c.effect_data = effect_data.duplicate(true)
 	c.description = description
 	c.exhausts = exhausts
+	c.school = school
 	return c
