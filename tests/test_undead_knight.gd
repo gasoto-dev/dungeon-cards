@@ -38,22 +38,19 @@ func test_shield_bash_applies_vulnerable_1() -> void:
 func test_bone_shatter_deals_14_damage() -> void:
 	var boss := UndeadKnight.new()
 	var player := Player.new()
-	boss.execute_action(player)  # turn 0 = Shield Bash
-	boss.execute_action(player)  # turn 1 = Bone Shatter
-	# Player at 50 HP after Shield Bash, now -14 unblockable
-	assert_eq(player.hp, 36)  # 50 - 14
+	boss._attack_turn = 1  # go directly to Bone Shatter — no Vulnerable bleeding in
+	boss.execute_action(player)
+	assert_eq(player.hp, 46)  # 60 - 14
 
 func test_bone_shatter_bypasses_block() -> void:
 	var boss := UndeadKnight.new()
 	var player := Player.new()
-	player.gain_block(20)  # full armor
-	boss.execute_action(player)  # Shield Bash (uses block)
-	player.gain_block(20)  # re-armor
+	player.gain_block(20)
+	boss._attack_turn = 1  # Bone Shatter directly
 	var hp_before := player.hp
-	boss.execute_action(player)  # Bone Shatter — ignores block
-	# Block should be untouched, HP reduced directly
-	assert_eq(player.block, 20)
-	assert_eq(player.hp, hp_before - 14)
+	boss.execute_action(player)
+	assert_eq(player.block, 20)        # block untouched
+	assert_eq(player.hp, hp_before - 14)  # HP reduced directly
 
 # ── Intent cycling ────────────────────────────────────────────────────────────
 
