@@ -19,6 +19,9 @@ var player: Player
 var enemy: Enemy
 var turn_count: int = 0  # total turns elapsed (player + enemy)
 
+# Subclass integration
+var _subclass: SubclassData = null
+
 signal state_changed(new_state: State)
 signal combat_ended(outcome: Outcome)
 
@@ -26,10 +29,16 @@ func _init(p_player: Player, p_enemy: Enemy) -> void:
 	player = p_player
 	enemy = p_enemy
 
-## Start combat — begin player's first turn
+## Set the active subclass before calling start_combat()
+func set_subclass(subclass: SubclassData) -> void:
+	_subclass = subclass
+
+## Start combat — applies combat-start passives, then begins player's first turn
 func start_combat() -> void:
 	state = State.PLAYER_TURN
+	_apply_combat_start_passives()
 	player.start_turn()
+	_apply_turn_start_passives()
 	state_changed.emit(state)
 
 ## Player ends their turn — transition to enemy turn
@@ -81,21 +90,61 @@ func _resolve_enemy_turn() -> void:
 	turn_count += 1
 	enemy.decide_intent()
 	enemy.execute_action(player)
+
+	# Necromancy: heal player when enemy takes Burn damage this turn
+	_apply_necromancy_burn_heal()
+
 	enemy.end_turn()
 	if _check_combat_end():
 		return
 	_transition_to(State.PLAYER_TURN)
 	player.start_turn()
+	_apply_turn_start_passives()
 
 func _transition_to(new_state: State) -> void:
 	state = new_state
 	state_changed.emit(new_state)
 
+## Apply passives that fire once at the very start of combat (before first turn)
+func _apply_combat_start_passives() -> void:
+	if _subclass == null:
+		return
+	match _subclass.passive_type:
+		SubclassData.PassiveType.CONJURATION_SKELETON:
+			player.deck.hand.append(CardFactory.summon_skeleton())
+		SubclassData.PassiveType.ILLUSION_WEAKEN_ENEMY:
+			enemy.add_status(Weakened.new(_subclass.passive_value))
+		# Abjuration block is applied via _apply_turn_start_passives on first turn too
+
+## Apply passives that fire at the start of each player turn
+func _apply_turn_start_passives() -> void:
+	if _subclass == null:
+		return
+	if _subclass.passive_type == SubclassData.PassiveType.ABJURATION_TURN_BLOCK:
+		player.gain_block(_subclass.passive_value)
+
+## Necromancy: check if enemy has Burn about to tick, and heal player
+## Called before enemy.end_turn() so we can read stacks before they decrement
+func _apply_necromancy_burn_heal() -> void:
+	if _subclass == null:
+		return
+	if _subclass.passive_type != SubclassData.PassiveType.NECROMANCY_BURN_LIFESTEAL:
+		return
+	var burn := enemy.get_status("Burn")
+	if burn != null and burn.stacks > 0:
+		# Burn will tick this turn — heal player
+		player.hp = mini(player.max_hp, player.hp + _subclass.passive_value)
+
 func _apply_card_effect(card: Card, attacker: Player, target: Enemy) -> void:
 	var effect := card.effect_data
+	var is_spell := card.type == Card.Type.SPELL
 
 	if effect.has("damage"):
 		var base := int(effect["damage"])
+		# Evocation: +passive_value to Spell card damage
+		if is_spell and _subclass != null and \
+				_subclass.passive_type == SubclassData.PassiveType.EVOCATION_SPELL_DAMAGE:
+			base += _subclass.passive_value
 		var final_dmg := attacker.calculate_outgoing_damage(base)
 		target.take_damage(final_dmg)
 
