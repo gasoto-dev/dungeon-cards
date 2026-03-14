@@ -40,12 +40,17 @@ func get_current_node() -> MapNode:
 		return null
 	return nodes[current_node_id]
 
-## Returns true if at least one BOSS node in the graph is reachable
-## from the current position (directly or through connections)
+## Returns true if a BOSS node exists AHEAD of the current position.
+## The current node itself is excluded — "reachable" means downstream only.
 func is_boss_reachable() -> bool:
-	if current_node_id.is_empty():
+	if current_node_id.is_empty() or not nodes.has(current_node_id):
 		return false
-	return _can_reach_boss(current_node_id, {})
+	var current: MapNode = nodes[current_node_id]
+	var visited_ids: Dictionary = { current_node_id: true }
+	for conn_id in current.connections:
+		if _can_reach_boss(conn_id, visited_ids):
+			return true
+	return false
 
 func _can_reach_boss(node_id: String, visited_ids: Dictionary) -> bool:
 	if visited_ids.has(node_id):
