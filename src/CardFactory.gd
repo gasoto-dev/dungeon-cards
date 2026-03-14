@@ -13,6 +13,13 @@ static func focus() -> Card:
 	return Card.new("focus", "Focus", Card.Type.RITUAL, 1,
 		{"draw": 2}, "Draw 2 cards.")
 
+## Conjuration subclass — injected into hand at combat start
+static func summon_skeleton() -> Card:
+	var card := Card.new("summon_skeleton", "Summon Skeleton", Card.Type.RITUAL, 0,
+		{"damage": 5}, "Summon a skeleton that deals 5 damage.")
+	card.exhausts = true  # disposable: removed from game after use
+	return card
+
 static func starting_deck() -> Array[Card]:
 	var deck: Array[Card] = []
 	for i in 5:
