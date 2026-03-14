@@ -42,6 +42,12 @@ func end_turn() -> void:
 	_tick_status_effects()
 	deck.discard_hand()
 
+## Take damage that bypasses Block entirely (armor-piercing)
+func take_unblockable_damage(amount: int) -> int:
+	amount = _apply_incoming_status_modifiers(amount)
+	hp = maxi(0, hp - amount)
+	return amount
+
 ## Spend spell slots to play a card
 func spend_slots(amount: int) -> bool:
 	if spell_slots < amount:
