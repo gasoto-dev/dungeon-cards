@@ -1,0 +1,11 @@
+# Godot
+.import/
+export.cfg
+export_presets.cfg
+*.tmp
+.mono/
+.godot/
+
+# OS
+.DS_Store
+Thumbs.db
