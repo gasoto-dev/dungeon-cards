@@ -24,8 +24,9 @@ var _subclass: SubclassData = null
 
 signal state_changed(new_state: State)
 signal combat_ended(outcome: Outcome)
-signal reward_ready(cards: Array)   # emitted on PLAYER_WIN with 3 reward cards
-signal combat_resolved              # stub seam for MapManager — emitted after reward resolved
+signal reward_ready(cards: Array)       # emitted on PLAYER_WIN with 3 reward cards
+signal combat_resolved                  # stub seam for MapManager — emitted after reward resolved
+signal subclass_choice_ready            # emitted on PLAYER_WIN vs UndeadKnight (boss kill)
 
 func _init(p_player: Player, p_enemy: Enemy) -> void:
 	player = p_player
@@ -87,11 +88,14 @@ func _check_combat_end() -> bool:
 		return true
 	return false
 
-## Emit reward_ready with 3 draft cards when player wins
+## Emit reward_ready with 3 draft cards when player wins.
+## Also emits subclass_choice_ready if the defeated enemy is the UndeadKnight boss.
 func _emit_rewards() -> void:
 	var reward_mgr := CardRewardManager.new()
 	var cards := reward_mgr.generate_reward(3)
 	reward_ready.emit(cards)
+	if enemy is UndeadKnight:
+		subclass_choice_ready.emit()
 
 ## Called by UI/MapManager after player selects or skips reward
 ## Emits combat_resolved so map can advance to next node (stub seam)
