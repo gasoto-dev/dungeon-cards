@@ -44,11 +44,13 @@ func execute_action(player: Player) -> int:
 	_attack_turn += 1
 	return damage
 
-## Shield Bash: 10 damage + Vulnerable(1) to player
+## Shield Bash: 10 damage, then apply Vulnerable(1) to player
+## Vulnerable takes effect on the NEXT hit — does not amplify its own application
 func _shield_bash(player: Player) -> int:
-	player.add_status(Vulnerable.new(1))
 	var dmg := calculate_outgoing_damage(SHIELD_BASH_DAMAGE)
-	return player.take_damage(dmg)
+	var dealt := player.take_damage(dmg)
+	player.add_status(Vulnerable.new(1))
+	return dealt
 
 ## Bone Shatter: 14 armor-piercing damage (bypasses player Block)
 func _bone_shatter(player: Player) -> int:
