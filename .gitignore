@@ -1,10 +1,16 @@
-# Godot
-.import/
+# Godot 4
+.godot/
+*.translation
+*.import
 export.cfg
 export_presets.cfg
-*.tmp
-.mono/
-.godot/
+
+# Binaries
+*.apk
+*.aab
+*.exe
+*.pck
+*.zip
 
 # OS
 .DS_Store
