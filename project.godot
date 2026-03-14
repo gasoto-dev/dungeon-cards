@@ -1,0 +1,25 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; however, it is also possible to edit it manually in this file.
+
+[configuration]
+
+config_version=5
+
+[application]
+
+config/name="Dungeon Cards"
+config/description="A roguelike deckbuilder set in a D&D fantasy world. Slay the Spire meets Dungeons & Dragons."
+run/main_scene=""
+config/features=PackedStringArray("4.3", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
