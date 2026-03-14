@@ -58,16 +58,6 @@ func select_school(school_id: String) -> void:
 func active_subclass() -> SubclassData:
 	return _active
 
-## Apply combat-start passives (Abjuration block, Conjuration skeleton, Illusion weakened)
-## Call this at the start of each combat after set_subclass is applied.
-func apply_combat_start(player: Player, enemy: Enemy) -> void:
-	if _active == null:
-		return
-	match _active.passive_type:
-		SubclassData.PassiveType.ABJURATION_TURN_BLOCK:
-			player.gain_block(_active.passive_value)
-		SubclassData.PassiveType.CONJURATION_SKELETON:
-			var skeleton := CardFactory.summon_skeleton()
-			player.deck.hand.append(skeleton)
-		SubclassData.PassiveType.ILLUSION_WEAKEN_ENEMY:
-			enemy.add_status(Weakened.new(_active.passive_value))
+## Note: combat-start and turn-start passives are applied by CombatManager internally
+## after set_subclass() is called. SubclassManager is responsible only for school
+## definitions and selection state.

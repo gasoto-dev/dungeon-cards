@@ -160,30 +160,20 @@ func _make_necromancy_combat() -> CombatManager:
 func test_necromancy_heals_player_when_burn_ticks() -> void:
 	var cm := _make_necromancy_combat()
 	cm.start_combat()
-	# Apply Burn to enemy
+	cm.player.hp = 40  # known value, well above death threshold
 	cm.enemy.add_status(Burn.new(3))
-	var hp_before := cm.player.hp
-	# Take some damage first so there's room to heal
-	cm.player.take_damage(10)
-	var hp_after_damage := cm.player.hp
 	cm.end_player_turn()
-	# Burn ticked → player should have healed 2 HP (minus enemy attack damage)
-	# Goblin does 8 damage, so net: hp_after_damage - 8 + 2
-	if cm.state == CombatManager.State.PLAYER_TURN or cm.outcome == CombatManager.Outcome.NONE:
-		# Just verify heal occurred — exact math depends on goblin attack
-		pass  # healing recorded in _apply_necromancy_burn_heal before end_turn
+	# Goblin attacks for 8, Necromancy heals 2 before Burn ticks → 40 - 8 + 2 = 34
+	assert_eq(cm.player.hp, 34)
 
 func test_necromancy_no_heal_without_burn() -> void:
 	var cm := _make_necromancy_combat()
-	cm.player.hp = 50
 	cm.start_combat()
-	# No Burn on enemy — no heal should happen
-	var hp_before_end := cm.player.hp
+	cm.player.hp = 40  # known value
+	# No Burn on enemy
 	cm.end_player_turn()
-	# Only goblin damage, no Burn heal
-	# hp should be hp_before_end - 8 (goblin attack), not + 2
-	if cm.state != CombatManager.State.COMBAT_END:
-		assert_lte(cm.player.hp, hp_before_end)
+	# Only goblin damage (8), no heal → exactly 32
+	assert_eq(cm.player.hp, 32)
 
 # --- Conjuration: Summon Skeleton in hand at combat start ---
 
