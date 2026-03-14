@@ -73,9 +73,19 @@ func test_draft_card_damage_curve_cost_3() -> void:
 	var pool := DraftCardPool.all_cards()
 	var cost3_spells := pool.filter(func(c): return c.type == Card.Type.SPELL and c.cost == 3)
 	for card in cost3_spells:
-		if card.effect_data.has("damage"):
-			assert_gte(card.effect_data["damage"], 18)
-			assert_lte(card.effect_data["damage"], 22)
+		if card.effect_data.has("damage") and not card.effect_data.has("hits"):
+			# Single-target: damage in 18-22 range
+			assert_gte(card.effect_data["damage"], 18,
+				"%s single damage should be ≥18" % card.card_name)
+			assert_lte(card.effect_data["damage"], 22,
+				"%s single damage should be ≤22" % card.card_name)
+		elif card.effect_data.has("hits") and card.effect_data.has("damage"):
+			# Multi-hit: total damage (hits * damage) must be in 18-22 range
+			var total := int(card.effect_data["hits"]) * int(card.effect_data["damage"])
+			assert_gte(total, 18,
+				"%s total damage (%d) should be ≥18" % [card.card_name, total])
+			assert_lte(total, 22,
+				"%s total damage (%d) should be ≤22" % [card.card_name, total])
 
 func test_all_cards_have_ids() -> void:
 	var pool := DraftCardPool.all_cards()
