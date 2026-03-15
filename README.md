@@ -1,5 +1,7 @@
 # Dungeon Cards
 
+[![CI](https://github.com/gasoto-dev/dungeon-cards/actions/workflows/ci.yml/badge.svg)](https://github.com/gasoto-dev/dungeon-cards/actions/workflows/ci.yml)
+
 A D&D-themed roguelike deckbuilder built in Godot 4. Play as a Wizard navigating a dungeon, fighting monsters with spells, advancing your subclass, and taking on the Ancient Dragon.
 
 Inspired by Slay the Spire.
