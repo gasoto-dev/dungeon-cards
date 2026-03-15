@@ -189,14 +189,14 @@ func _make_card_panel(card: Card) -> PanelContainer:
 
 	# Type badge
 	var badge := ColorRect.new()
-	badge.color = TYPE_COLORS.get(card.type, Color.WHITE)
+	badge.color = TYPE_COLORS.get(card.type, Color.WHITE) as Color
 	badge.custom_minimum_size = Vector2(0, 24)
 	vbox.add_child(badge)
 
 	var type_lbl := Label.new()
-	type_lbl.text = TYPE_NAMES.get(card.type, "Unknown")
+	type_lbl.text = TYPE_NAMES.get(card.type, "Unknown") as String
 	type_lbl.add_theme_font_size_override("font_size", 11)
-	type_lbl.add_theme_color_override("font_color", TYPE_COLORS.get(card.type, Color.WHITE))
+	type_lbl.add_theme_color_override("font_color", TYPE_COLORS.get(card.type, Color.WHITE) as Color)
 	vbox.add_child(type_lbl)
 
 	# Name
