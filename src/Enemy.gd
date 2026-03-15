@@ -12,6 +12,7 @@ enum Intent {
 var enemy_name: String = "Enemy"
 var hp: int = 10
 var max_hp: int = 10
+var block: int = 0
 var intent: Intent = Intent.ATTACK
 var status_effects: Array[StatusEffect] = []
 var is_alive: bool:
@@ -22,11 +23,18 @@ func _init(p_name: String, p_hp: int) -> void:
 	hp = p_hp
 	max_hp = p_hp
 
-## Take damage, applying status effect modifiers
+## Take damage, reduced by block first, then applying status modifiers
 func take_damage(amount: int) -> int:
 	amount = _apply_incoming_modifiers(amount)
-	hp = maxi(0, hp - amount)
-	return amount
+	var absorbed := mini(block, amount)
+	block -= absorbed
+	var remaining := amount - absorbed
+	hp = maxi(0, hp - remaining)
+	return remaining
+
+## Gain block
+func gain_block(amount: int) -> void:
+	block += amount
 
 ## Determine and set the next action (override in subclass)
 func decide_intent() -> void:
@@ -52,6 +60,7 @@ func get_status(effect_name: String) -> StatusEffect:
 
 ## Called at end of enemy's turn
 func end_turn() -> void:
+	block = 0  # block does not persist between turns
 	_tick_status_effects()
 
 func calculate_outgoing_damage(base_damage: int) -> int:
