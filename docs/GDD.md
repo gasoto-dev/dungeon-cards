@@ -126,3 +126,28 @@ Node-based (Slay the Spire style). Types: Combat, Elite, Rest Site, Shop, Event,
 - [ ] How many relics can player hold per run?
 - [ ] Side quest — always available in Act 2, or conditional unlock?
 - [ ] Card upgrade system at rest sites?
+
+---
+
+## Coding Conventions
+
+### Status effect ordering (critical)
+When an action both applies a status AND deals damage, **damage fires before the status is applied** (Slay the Spire behavior). The debuff affects the *next* hit, not the one that applies it.
+
+Example: Shield Bash → deal 10 damage first, then apply Vulnerable to player.
+
+**Pattern to watch:** Any time `take_damage()` and `apply_status()` appear in the same action, verify order is damage → status.
+
+### Test isolation for sequential actions
+When testing multiple enemy actions in sequence, always call `end_turn()` between them to reset per-turn state (block, status counters). Without this, status effects bleed between action tests.
+
+Preferred pattern:
+```gdscript
+func test_two_actions():
+    boss.action_one(player)
+    boss.end_turn()
+    player.end_turn()
+    boss.action_two(player)
+```
+
+Or set `boss._attack_turn` directly to isolate a specific action without executing prior ones.
