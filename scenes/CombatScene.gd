@@ -54,7 +54,7 @@ func _ready() -> void:
 	player = Player.new()
 	enemy = GoblinScout.new()
 	combat_manager = CombatManager.new(player, enemy)
-	add_child(combat_manager)
+	# CombatManager is purely data-driven (no _process) — no add_child needed
 
 	# Wire signals
 	combat_manager.state_changed.connect(_on_state_changed)
