@@ -28,7 +28,7 @@ func draw(n: int) -> Array[Card]:
 				break
 			_reshuffle_discard()
 		if not draw_pile.is_empty():
-			var card := draw_pile.pop_back()
+			var card: Card = draw_pile.pop_back() as Card
 			hand.append(card)
 			drawn.append(card)
 	return drawn
