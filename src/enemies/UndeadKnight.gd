@@ -13,6 +13,7 @@ var _attack_turn: int = 0  # 0 = Shield Bash, 1 = Bone Shatter, cycles
 func _init() -> void:
 	super._init("Undead Knight", BASE_HP)
 	intent = Intent.ATTACK
+	intent_value = SHIELD_BASH_DAMAGE  # first attack is always Shield Bash
 
 ## Override take_damage to intercept first death and Reanimate
 func take_damage(amount: int) -> int:
@@ -30,9 +31,11 @@ func _reanimate() -> void:
 ## Decide next intent (cycles Shield Bash → Bone Shatter → Shield Bash …)
 func decide_intent() -> void:
 	if _attack_turn % 2 == 0:
-		intent = Intent.ATTACK    # Shield Bash
+		intent = Intent.ATTACK        # Shield Bash
+		intent_value = SHIELD_BASH_DAMAGE
 	else:
-		intent = Intent.ATTACK    # Bone Shatter (also an attack, different method)
+		intent = Intent.ATTACK        # Bone Shatter (armor-piercing)
+		intent_value = BONE_SHATTER_DAMAGE
 
 ## Execute the turn action. Returns total HP damage dealt to player.
 func execute_action(player: Player) -> int:

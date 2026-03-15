@@ -14,6 +14,7 @@ var hp: int = 10
 var max_hp: int = 10
 var block: int = 0
 var intent: Intent = Intent.ATTACK
+var intent_value: int = 0  # damage/heal amount associated with current intent
 var status_effects: Array[StatusEffect] = []
 var is_alive: bool:
 	get: return hp > 0

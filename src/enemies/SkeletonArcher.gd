@@ -8,9 +8,11 @@ const VULNERABLE_STACKS: int = 2
 func _init() -> void:
 	super._init("Skeleton Archer", 18)
 	intent = Intent.DEBUFF
+	intent_value = BASE_ATTACK
 
 func decide_intent() -> void:
 	intent = Intent.DEBUFF
+	intent_value = BASE_ATTACK  # also deals damage after applying Vulnerable
 
 ## Shoots an arrow that deals damage and applies Vulnerable
 func execute_action(player: Player) -> int:
