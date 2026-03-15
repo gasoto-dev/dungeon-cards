@@ -55,6 +55,7 @@ func test_bone_shatter_bypasses_block() -> void:
 # ── Intent cycling ────────────────────────────────────────────────────────────
 
 func test_intent_pattern_cycles_correctly() -> void:
+	var h := load("res://tests/test_helpers.gd").new()
 	var boss := UndeadKnight.new()
 	var player := Player.new()
 	player.hp = 999  # prevent death
@@ -62,14 +63,13 @@ func test_intent_pattern_cycles_correctly() -> void:
 	# Turn 1: Shield Bash → Vulnerable applied
 	boss.execute_action(player)
 	assert_not_null(player.get_status("Vulnerable"))
-	var hp_after_bash := player.hp
+	h.simulate_full_turn(boss, player)
 	# Turn 2: Bone Shatter → unblockable, no new Vulnerable
 	player.gain_block(50)  # lots of block to prove it's bypassed
 	boss.execute_action(player)
 	assert_eq(player.block, 50)  # block untouched by Bone Shatter
+	h.simulate_full_turn(boss, player)
 	# Turn 3: back to Shield Bash
-	player.status_effects.clear()
-	player.block = 0
 	boss.execute_action(player)
 	assert_not_null(player.get_status("Vulnerable"))
 
