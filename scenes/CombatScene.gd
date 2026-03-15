@@ -139,7 +139,7 @@ func _refresh_enemy_display() -> void:
 	enemy_hp_bar.value = enemy.hp
 	enemy_hp_label.text = "%d / %d" % [enemy.hp, enemy.max_hp]
 	enemy_block_label.text = "Block: %d" % enemy.block
-	enemy_intent_label.text = "Intent: %s" % _intent_label(enemy.intent)
+	enemy_intent_label.text = "Intent: %s" % _intent_label(enemy)
 	enemy_defeated_overlay.visible = not enemy.is_alive
 
 func _refresh_player_display() -> void:
@@ -226,11 +226,13 @@ func _make_card_panel(card: Card) -> PanelContainer:
 
 	return panel
 
-func _intent_label(intent: Enemy.Intent) -> String:
-	match intent:
-		Enemy.Intent.ATTACK: return "Attack"
-		Enemy.Intent.DEFEND: return "Defend"
-		Enemy.Intent.BUFF:   return "Buff"
+func _intent_label(p_enemy: Enemy) -> String:
+	var val := p_enemy.intent_value
+	match p_enemy.intent:
+		Enemy.Intent.ATTACK: return "Attack (%d)" % val if val > 0 else "Attack"
+		Enemy.Intent.DEFEND: return "Defend (%d)" % val if val > 0 else "Defend"
+		Enemy.Intent.DEBUFF: return "Debuff (%d)" % val if val > 0 else "Debuff"
+		Enemy.Intent.BUFF:   return "Buff (%d)" % val if val > 0 else "Buff"
 		_: return "Unknown"
 
 func _set_reward_visible(visible_flag: bool) -> void:
