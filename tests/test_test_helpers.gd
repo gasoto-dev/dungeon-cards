@@ -30,9 +30,8 @@ func test_simulate_full_turn_decrements_player_status() -> void:
 	enemy.enemy_name = "Dummy"
 	enemy.hp = 10
 	var player := Player.new()
-	# Add Vulnerable (2 stacks) manually
-	var vuln := StatusEffect.new("Vulnerable", 2)
-	player.status_effects.append(vuln)
+	# Add Vulnerable via proper API
+	player.add_status(Vulnerable.new(2))
 	assert_eq(player.get_status("Vulnerable").stacks, 2)
 	h.simulate_full_turn(enemy, player)
 	# end_turn decrements — either reduced or removed
