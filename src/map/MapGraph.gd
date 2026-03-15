@@ -38,7 +38,7 @@ func travel_to(node_id: String) -> MapNode:
 func get_current_node() -> MapNode:
 	if current_node_id.is_empty() or not nodes.has(current_node_id):
 		return null
-	return nodes[current_node_id]
+	return nodes[current_node_id] as MapNode
 
 ## Returns true if a BOSS node exists AHEAD of the current position.
 ## The current node itself is excluded — "reachable" means downstream only.

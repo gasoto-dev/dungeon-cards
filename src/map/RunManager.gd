@@ -32,7 +32,7 @@ func get_available_nodes() -> Array[MapNode]:
 	var result: Array[MapNode] = []
 	for conn_id in current.connections:
 		if map.nodes.has(conn_id):
-			result.append(map.nodes[conn_id])
+			result.append(map.nodes[conn_id] as MapNode)
 	return result
 
 ## Advance to the next act — builds a fresh map, resets current position

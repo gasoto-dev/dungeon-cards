@@ -44,7 +44,7 @@ func _make_card_panel(card: Card) -> PanelContainer:
 	panel.add_child(vbox)
 
 	# Type badge (colored rectangle)
-	var badge_color := TYPE_COLORS.get(card.type, Color.WHITE)
+	var badge_color: Color = TYPE_COLORS.get(card.type, Color.WHITE) as Color
 	var badge := ColorRect.new()
 	badge.color = badge_color
 	badge.custom_minimum_size = Vector2(0, 30)
