@@ -15,8 +15,13 @@ jobs:
 
       - name: Install GUT v9.3.0
         run: |
-          wget -q https://github.com/bitwes/Gut/releases/download/v9.3.0/gut_9.3.0.zip
-          unzip -q gut_9.3.0.zip -d addons/
+          # GUT ships source-only — use the archive URL (no release assets exist)
+          wget -q https://github.com/bitwes/Gut/archive/refs/tags/v9.3.0.zip -O gut_9.3.0.zip
+          unzip -q gut_9.3.0.zip
+          # Archive extracts to Gut-9.3.0/addons/gut/ — move to repo root
+          mkdir -p addons
+          mv Gut-9.3.0/addons/gut addons/gut
+          rm -rf Gut-9.3.0 gut_9.3.0.zip
 
       - name: Download Godot 4 headless
         run: |
